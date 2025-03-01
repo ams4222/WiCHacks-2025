@@ -13,6 +13,7 @@ export ledger length: Maybe<Opaque<"string">>;
 export ledger streak: Counter;
 export ledger entry: Maybe<Opaque<"string">>;
 export ledger user: Bytes<32>;
+export ledger rewardBalance: Counter;
 
 witness local_secret_key(): Bytes<32>; // User secret key
 
@@ -21,6 +22,7 @@ constructor() {
     exerciseLength = EXERCISE.length;
     streak.increment(1);
     entry = none<Opaque<"string">>();
+    rewardBalance = new Counter(0);
 }
 
 export circuit addEntry(new_entry: Opaque<"string">): [] {
@@ -29,12 +31,20 @@ export circuit addEntry(new_entry: Opaque<"string">): [] {
     user = disclose(public_key(local_secret_key(), instance as Field as Bytes<32>));
     entry = some<Opaque<"string">(new_entry);
     logged = LOGGED.yes;
+    rewardBalance.increment(1);
 }
 
 export circuit deleteEntry():  {
     assert logged == LOGGED.yes
         "Deleting entry from exercise log";
-    
+    entry = none<Opaque<"string">>();
+    logged = LOGGED.no;
+}
+
+export circuit claimReward(): [] {
+    assert rewardBalance.value() > 0 "No rewards to claim, exercise to earn!";
+    send user, rewardBalance.value();
+    rewardBalance.reset();
 }
 
 export circuit public_key(sk: Bytes<32>, instance: Bytes<32>): Bytes<32> {
