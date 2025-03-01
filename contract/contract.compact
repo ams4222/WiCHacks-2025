@@ -2,19 +2,36 @@ pragma language version >= 0.14.0;
 
 import CompactStandardLibrary;
 
-export enum EXERCISE { type, length}
+export enum EXERCISE { type, length }
+
+export enum LOGGED { yes, no }
 
 export ledger exercise: EXERCISE;
-export ledger type: TYPE;
-export ledger length: LENGTH;
+export ledger logged: LOGGED;
+export ledger type: Maybe<Opaque<"string">>;
+export ledger length: Maybe<Opaque<"string">>;
 export ledger streak: Counter;
-//export ledger message: Maybe<Opaque<"string";
+export ledger entry: Maybe<Opaque<"string">>;
+export ledger user: Bytes<32>;
+
+witness local_secret_key(): Bytes<32>;
 
 constructor() {
     exerciseType = EXERCISE.type;
     exerciseLength = EXERCISE.length;
     streak.increment(1);
-    //message = none<Opaque<"string>>();"
+    entry = none<Opaque<"string">>();
 }
 
-//export circuit log()
+export circuit addEntry(new_entry: Opaque<"string">): [] {
+    assert logged == LOGGED.no
+        "Adding entry to exercise log";
+    entry = some<Opaque<"string">(new_entry);
+    logged = LOGGED.yes;
+}
+
+export circuit deleteEntry():  {
+    assert logged == LOGGED.yes
+        "Deleting entry from exercise log";
+    
+}
