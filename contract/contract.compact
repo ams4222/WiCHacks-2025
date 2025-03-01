@@ -1,0 +1,20 @@
+pragma language version >= 0.14.0;
+
+import CompactStandardLibrary;
+
+export enum EXERCISE { type, length}
+
+export ledger exercise: EXERCISE;
+export ledger type: TYPE;
+export ledger length: LENGTH;
+export ledger streak: Counter;
+//export ledger message: Maybe<Opaque<"string";
+
+constructor() {
+    exerciseType = EXERCISE.type;
+    exerciseLength = EXERCISE.length;
+    streak.increment(1);
+    //message = none<Opaque<"string>>();"
+}
+
+//export circuit log()
