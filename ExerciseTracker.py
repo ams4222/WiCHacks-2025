@@ -3,6 +3,7 @@ class Tracker:
         self.exercises = set()
         self.exercise_count = {}
         self.exercise_type = {"mental":set(), "physical":set()}
+        self.points = 0
     
     def add_exercise(self, exercise, physical):
         if (exercise in self.exercises):
@@ -14,12 +15,14 @@ class Tracker:
                 self.exercise_type["mental"].add(exercise)
             self.exercises.add(exercise)
             self.exercise_count[exercise] = 1
+            self.points += 3
     
     def increment_exercise(self, exercise):
         if (exercise not in self.exercises):
             print("Exercise doesn't exist, did you mean to add it?")
         else:
             self.exercise_count[exercise] += 1
+            self.points = 5
     
     def decrement_exercise(self, exercise):
         if (exercise not in self.exercises):
@@ -41,6 +44,9 @@ class Tracker:
             return self.exercise_type["physical"]
         else:
             return self.exercise_type["mental"]
+    
+    def get_points(self):
+        return self.points
 
 def main():
     tracker = Tracker()
